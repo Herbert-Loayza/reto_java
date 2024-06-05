@@ -1,0 +1,46 @@
+
+CREATE TABLE productos (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    fecha_registro DATE NOT NULL
+);
+
+-----------------------------------------------------------------------------------
+CREATE  PROCEDURE sp_insertAndListProducts(
+    IN idProducto INT,
+    IN nombre VARCHAR(255),
+    IN fec_registro DATE,
+    OUT codigoRespuesta INT,
+    OUT mensajeRespuesta VARCHAR(255)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Manejo de errores
+        SET codigoRespuesta = 1;
+        SET mensajeRespuesta = 'Error al ejecutar el procedimiento.';
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+
+    -- Insertamos el producto
+    INSERT INTO productos (id, nombre, fecha_registro)
+    VALUES (idProducto, nombre, fec_registro);
+
+    IF ROW_COUNT() > 0 THEN
+        SELECT * FROM productos WHERE fecha_registro = fec_registro;
+
+        -- En caso de éxito
+        SET codigoRespuesta = 0;
+        SET mensajeRespuesta = 'Ejecución con éxito';
+    ELSE
+        -- En caso de falla
+        SET codigoRespuesta = 1;
+        SET mensajeRespuesta = 'Error al insertar el producto';
+    END IF;
+
+    COMMIT;
+END;
+
+

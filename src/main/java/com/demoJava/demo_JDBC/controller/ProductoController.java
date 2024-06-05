@@ -22,11 +22,14 @@ public class ProductoController {
     }
 
     @PostMapping("/guardar")
-    public List<Producto> GuardarYListarProductos(@RequestParam int id, @RequestParam String producto, @RequestParam Date fecha) throws SQLException {
+    public List<Producto> GuardarYListarProductos(@RequestParam int id,
+                                                  @RequestParam String producto,
+                                                  @RequestParam Date fecha) throws SQLException {
         List<Producto>lstProductos= productoDao.insertarYListarProductos(id,producto, fecha);
 
+//        LISTA DE PRODUCTOS REGISTRADOS DEL DIA
         for (Producto e : lstProductos){
-            System.out.println("Producto: " + e.getNombre());
+            System.out.println("Producto: " + e.getNombre() + " - Fecha: " + e.getFechaRegistro());
         }
         return lstProductos;
     }
